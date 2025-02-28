@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Slide {
+  id        Int      @id @default(autoincrement())
+  image     String   // URL изображения
+  rating    Int      // Рейтинг (оценка) от 1 до 5
+  review    String   // Текст отзыва
+  username  String   // Имя пользователя
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

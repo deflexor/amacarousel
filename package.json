@@ -1,0 +1,39 @@
+{
+  "name": "carousel-project",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "nuxt dev",
+    "dev:server": "concurrently \"tsc -w --project tsconfig-server.json\" \"nodemon dist/server/index.js\"",
+    "build": "nuxt build",
+    "start": "node dist/server/index.js",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@nuxtjs/tailwindcss": "^6.10.1",
+    "@prisma/client": "^5.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "fastify": "^4.24.3",
+    "pg": "^8.11.3",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
+    "swiper": "^10.3.1",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.14",
+    "@types/express": "^4.17.18",
+    "@types/node": "^20.7.0",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1",
+    "nuxt": "^3.15.4",
+    "prisma": "^5.3.1",
+    "sass": "^1.68.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
