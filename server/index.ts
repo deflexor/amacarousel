@@ -28,6 +28,7 @@ app.get('/api/slides', async (req, res) => {
     });
     res.json(slides);
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Failed to fetch slides' });
   }
 });
@@ -111,7 +112,7 @@ io.on('connection', (socket) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

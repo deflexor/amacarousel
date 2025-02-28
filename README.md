@@ -1,75 +1,25 @@
-# Nuxt Minimal Starter
+# Карусель - Vue 3 компонент
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Инструкция по запуску проекта
 
-## Setup
-
-Make sure to install dependencies:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+```
+Создайте базу данных carousel_db
+Настройте соединение в файле .env (см. пример в .env.example)
 ```
 
-## Development Server
+## Установка зависимостей:
 
-Start the development server on `http://localhost:3000`:
+`npm install`
 
-```bash
-# npm
-npm run dev
+## Инициализация базы данных:
 
-# pnpm
-pnpm dev
+`npx prisma migrate dev --name init`
 
-# yarn
-yarn dev
+## Запуск проекта в режиме разработки:
 
-# bun
-bun run dev
-```
+`npm run dev`
 
-## Production
+Проект будет доступен по адресам:
 
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Главная страница: http://localhost:3000/
+Страница управления: http://localhost:3000/admin
