@@ -46,17 +46,14 @@ const swiper = useSwiper(containerRef, {
   effect: 'creative',
   loop: false,
   navigation: true,
-  pagination: true,
-  slidesPerView: 3,
+  slidesPerView: 1,
   spaceBetween: 10,
   breakpoints: {
     768: {
       slidesPerView: 1,
     },
   },
-  autoplay: {
-    delay: 5000,
-  },
+  autoplay: false,
   creativeEffect: {
     prev: {
       shadow: true,
@@ -70,10 +67,12 @@ const swiper = useSwiper(containerRef, {
 })
 
 onMounted(async () => {
+  console.log(swiper.instance)
+  console.log(containerRef)
   socket.initSocket();
-
+  
   slides.value = await fetchSlides();
-
+  
   socket.onSlideCreated((slide) => {
     slides.value.push(slide);
   });
@@ -90,15 +89,13 @@ onMounted(async () => {
   });
   
   socket.onCarouselNext(() => {
-    if (swiper) {
-      swiper.next();
-    }
+    // if (swiper) swiper.next();
+    containerRef.value?.swiper.slideNext()
   });
   
   socket.onCarouselPrev(() => {
-    if (swiper) {
-      swiper.prev();
-    }
+    // if (swiper) swiper.prev();
+    containerRef.value?.swiper.slidePrev()
   });
 });
 
