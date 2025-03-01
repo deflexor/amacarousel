@@ -18,7 +18,7 @@ const prisma = new PrismaClient();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json({limit: '5mb'}));
 
 // API Routes for Slides
 app.get('/api/slides', async (req, res) => {
@@ -50,6 +50,7 @@ app.post('/api/slides', async (req, res) => {
     
     res.status(201).json(slide);
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: 'Failed to create slide' });
   }
 });

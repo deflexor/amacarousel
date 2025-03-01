@@ -9,7 +9,7 @@ datasource db {
 
 model Slide {
   id        Int      @id @default(autoincrement())
-  image     String   // URL изображения
+  image     String   @db.MediumText // URL изображения
   rating    Int      // Рейтинг (оценка) от 1 до 5
   review    String   // Текст отзыва
   username  String   // Имя пользователя

@@ -28,13 +28,12 @@
           <form @submit.prevent="saveSlide">
             <div class="form-group">
               <label for="image">Изображение</label>
-              <!-- <input type="text" id="image" v-model="currentSlide.image" required /> -->
               <input 
                 id="image" 
                 type="file" 
                 @change="handleFileChange" 
                 accept="image/*" 
-                required 
+                :required="!isEditing"
                 class="form-control"
               />
               <div v-if="imagePreview" class="preview-container">
@@ -83,16 +82,12 @@
               <div class="slide-rating">
                 <span v-for="i in 5" :key="i" class="star">
                   <svg
-                    :class="{ 'star-filled': i <= slide.rating }"
                     xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
+                    viewBox="0 0 16 16"
                     width="16"
                     height="16"
                   >
-                    <path
-                      fill="currentColor"
-                      d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
-                    />
+                    <path :fill="i <= slide.rating ? '#FFDE30' : 'currentColor'" d="M6.79107 2.29596C7.37318 1.45701 8.62666 1.45701 9.20877 2.29596L10.5479 4.226C10.7385 4.50065 11.0191 4.702 11.3424 4.79615L13.6146 5.45774C14.6023 5.74531 14.9896 6.92283 14.3617 7.72891L12.9172 9.58333C12.7116 9.84721 12.6044 10.173 12.6137 10.5058L12.6788 12.8448C12.7071 13.8615 11.6931 14.5892 10.7229 14.2484L8.49093 13.4645C8.17333 13.3529 7.82651 13.3529 7.50891 13.4645L5.27696 14.2484C4.30678 14.5892 3.29269 13.8615 3.321 12.8448L3.38613 10.5058C3.39539 10.173 3.28822 9.84721 3.08266 9.58333L1.63812 7.72891C1.01021 6.92283 1.39756 5.74531 2.38523 5.45773L4.65743 4.79615C4.98075 4.702 5.26134 4.50065 5.4519 4.226L6.79107 2.29596Z" />
                   </svg>
                 </span>
               </div>
@@ -199,7 +194,7 @@ function editSlide(slide: Slide) {
   editingId.value = slide.id;
   
   // Set form values
-  currentSlide.image = slide.image;
+  imagePreview.value = currentSlide.image = slide.image;
   currentSlide.rating = slide.rating;
   currentSlide.review = slide.review;
   currentSlide.username = slide.username;
@@ -212,6 +207,7 @@ function cancelEdit() {
 function resetForm() {
   isEditing.value = false;
   editingId.value = null;
+  imagePreview.value = '';
   
   // Reset form values
   currentSlide.image = defaultSlide.image;
@@ -240,239 +236,250 @@ function prevSlide() {
   min-height: 100vh;
   padding: 40px 20px;
   background-color: #f5f5f5;
-  
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
+}
+
+.admin-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.admin-page .title {
+  text-align: center;
+  margin-bottom: 40px;
+  font-size: 32px;
+  color: #333;
+}
+
+.admin-page .control-panel {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .admin-page .control-panel {
+    flex-direction: column;
   }
-  
-  .title {
-    text-align: center;
-    margin-bottom: 40px;
-    font-size: 32px;
-    color: #333;
+}
+
+.admin-page .carousel-controls,
+.admin-page .slide-form {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-page .carousel-controls h2,
+.admin-page .slide-form h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.admin-page .carousel-controls .button-group {
+  display: flex;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .admin-page .carousel-controls .button-group {
+    flex-direction: column;
   }
-  
-  .control-panel {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 40px;
-    
-    @media (max-width: 768px) {
-      flex-direction: column;
-    }
-    
-    .carousel-controls, .slide-form {
-      flex: 1;
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      
-      h2 {
-        margin-bottom: 20px;
-        font-size: 20px;
-        color: #333;
-      }
-    }
-    
-    .carousel-controls {
-      .button-group {
-        display: flex;
-        gap: 10px;
-        
-        @media (max-width: 768px) {
-          flex-direction: column;
-        }
-        
-        .control-button {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          padding: 10px 15px;
-          background-color: #f0f0f0;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          
-          &:hover {
-            background-color: #e0e0e0;
-          }
-        }
-      }
-    }
-    
-    .slide-form {
-      form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        
-        .form-group {
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          
-          label {
-            font-size: 14px;
-            color: #666;
-          }
-          
-          input, select, textarea {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            
-            &:focus {
-              outline: none;
-              border-color: #4a90e2;
-            }
-          }
-        }
-        
-        .form-actions {
-          display: flex;
-          gap: 10px;
-          margin-top: 10px;
-          
-          .btn {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s;
-            
-            &.btn-primary {
-              background-color: #4a90e2;
-              color: #fff;
-              
-              &:hover {
-                background-color: #3a80d2;
-              }
-            }
-            
-            &.btn-secondary {
-              background-color: #f0f0f0;
-              color: #333;
-              
-              &:hover {
-                background-color: #e0e0e0;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  
-  .slides-list {
-    background: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    
-    h2 {
-      margin-bottom: 20px;
-      font-size: 20px;
-      color: #333;
-    }
-    
-    .slides-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      
-      .slide-card {
-        border: 1px solid #eee;
-        border-radius: 10px;
-        overflow: hidden;
-        position: relative;
-        
-        .slide-image {
-          height: 150px;
-          overflow: hidden;
-          
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-        }
-        
-        .slide-info {
-          padding: 15px;
-          
-          .slide-username {
-            font-weight: bold;
-            margin-bottom: 5px;
-          }
-          
-          .slide-rating {
-            display: flex;
-            margin-bottom: 10px;
-            
-            .star {
-              color: #ccc;
-              
-              &.star-filled {
-                color: #ffc107;
-              }
-            }
-          }
-          
-          .slide-review {
-            font-size: 14px;
-            color: #666;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
-        
-        .slide-actions {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          display: flex;
-          gap: 5px;
-          
-          .btn {
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            
-            &.btn-edit {
-              background-color: #4a90e2;
-              color: #fff;
-              
-              &:hover {
-                background-color: #3a80d2;
-              }
-            }
-            
-            &.btn-delete {
-              background-color: #e74c3c;
-              color: #fff;
-              
-              &:hover {
-                background-color: #d73c2c;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+}
+
+.admin-page .carousel-controls .control-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.admin-page .carousel-controls .control-button:hover {
+  background-color: #e0e0e0;
+}
+
+.admin-page .slide-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-page .slide-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.admin-page .slide-form .form-group label {
+  font-size: 14px;
+  color: #666;
+}
+
+.admin-page .slide-form .form-group input,
+.admin-page .slide-form .form-group select,
+.admin-page .slide-form .form-group textarea {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.admin-page .slide-form .form-group input:focus,
+.admin-page .slide-form .form-group select:focus,
+.admin-page .slide-form .form-group textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.admin-page .slide-form .form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.admin-page .slide-form .form-actions .btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.admin-page .slide-form .form-actions .btn.btn-primary {
+  background-color: #4a90e2;
+  color: #fff;
+}
+
+.admin-page .slide-form .form-actions .btn.btn-primary:hover {
+  background-color: #3a80d2;
+}
+
+.admin-page .slide-form .form-actions .btn.btn-secondary {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.admin-page .slide-form .form-actions .btn.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.admin-page .slides-list {
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-page .slides-list h2 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.admin-page .slides-list .slides-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.admin-page .slides-list .slide-card {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.admin-page .slides-list .slide-card .slide-image {
+  height: 150px;
+  overflow: hidden;
+}
+
+.admin-page .slides-list .slide-card .slide-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-page .slides-list .slide-card .slide-info {
+  padding: 15px;
+}
+
+.admin-page .slides-list .slide-card .slide-info .slide-username {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.admin-page .slides-list .slide-card .slide-info .slide-rating {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.admin-page .slides-list .slide-card .slide-info .slide-rating .star {
+  color: #ccc;
+}
+
+.admin-page .slides-list .slide-card .slide-info .slide-review {
+  font-size: 14px;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-page .slides-list .slide-card .slide-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.admin-page .slides-list .slide-card .slide-actions .btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.admin-page .slides-list .slide-card .slide-actions .btn.btn-edit {
+  background-color: #4a90e2;
+  color: #fff;
+}
+
+.admin-page .slides-list .slide-card .slide-actions .btn.btn-edit:hover {
+  background-color: #3a80d2;
+}
+
+.admin-page .slides-list .slide-card .slide-actions .btn.btn-delete {
+  background-color: #e74c3c;
+  color: #fff;
+}
+
+.admin-page .slides-list .slide-card .slide-actions .btn.btn-delete:hover {
+  background-color: #d73c2c;
+}
+
+.admin-page .preview-container {
+  margin-top: 10px;
+}
+
+.admin-page .preview-image {
+  max-width: 100%;
+  max-height: 200px;
 }
 </style>
