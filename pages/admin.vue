@@ -27,8 +27,19 @@
           <h2>{{ isEditing ? 'Редактировать слайд' : 'Добавить слайд' }}</h2>
           <form @submit.prevent="saveSlide">
             <div class="form-group">
-              <label for="image">URL изображения</label>
-              <input type="text" id="image" v-model="currentSlide.image" required />
+              <label for="image">Изображение</label>
+              <!-- <input type="text" id="image" v-model="currentSlide.image" required /> -->
+              <input 
+                id="image" 
+                type="file" 
+                @change="handleFileChange" 
+                accept="image/*" 
+                required 
+                class="form-control"
+              />
+              <div v-if="imagePreview" class="preview-container">
+                <img :src="imagePreview" alt="Preview" class="preview-image" />
+              </div>
             </div>
             
             <div class="form-group">
@@ -109,11 +120,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted } from 'vue';
-import { Slide, NewSlide } from '~/types/slide';
+import type { Slide, NewSlide } from '~/types/slide';
 
 const slides = ref<Slide[]>([]);
 const isEditing = ref(false);
 const editingId = ref<number | null>(null);
+const imagePreview = ref<string>('');
 
 const defaultSlide: NewSlide = {
   image: '',
@@ -154,6 +166,23 @@ onMounted(async () => {
 onUnmounted(() => {
   socket.closeSocket();
 });
+
+function handleFileChange(event: Event): void {
+  const target = event.target as HTMLInputElement;
+  if (!target.files || target.files.length === 0) return;
+  
+  const file: File = target.files[0];
+  if (!file) return;
+  
+  // currentSlide.image = file;
+  
+  // Create image preview
+  const reader: FileReader = new FileReader();
+  reader.onload = (e: ProgressEvent<FileReader>) => {
+    imagePreview.value = currentSlide.image = e.target?.result as string;
+  };
+  reader.readAsDataURL(file);
+}
 
 async function saveSlide() {
   if (isEditing.value && editingId.value !== null) {
