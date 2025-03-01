@@ -43,27 +43,16 @@ const { fetchSlides } = useApi();
 const socket = useSocket();
 
 const swiper = useSwiper(containerRef, {
-  effect: 'creative',
   loop: false,
   navigation: true,
   slidesPerView: 1,
   spaceBetween: 10,
   breakpoints: {
     768: {
-      slidesPerView: 1,
+      slidesPerView: 3,
     },
   },
-  autoplay: false,
-  creativeEffect: {
-    prev: {
-      shadow: true,
-      translate: [0, 0, -400],
-    },
-    next: {
-      shadow: true,
-      translate: [0, 0, -400],
-    },
-  },
+  autoplay: false
 })
 
 onMounted(async () => {
